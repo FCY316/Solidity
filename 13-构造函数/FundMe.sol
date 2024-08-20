@@ -6,6 +6,11 @@ contract FundMe {
     uint256 public minnumUsd = 50 * 1e18;
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
+    address public owner;
+    // 构造函数
+    constructor() {
+        owner = msg.sender;
+    }
     // 要钱函数
     function fund() public payable {
         // require 是 Solidity 中的一个条件检查语句，用于确保某个条件成立。如果条件不成立，则会抛出一个异常并回滚交易。
@@ -26,16 +31,15 @@ contract FundMe {
         ) {
             address funder = funders[funderIndex];
             addressToAmountFunded[funder] = 0;
+            funders = new address[](0);
+            (bool callSuccess, ) = payable(msg.sender).call{
+                value: address(this).balance
+            }("");
+            // 使用require进行判断
+            require(callSuccess, "call failed");
         }
     }
 }
 /*
-  for(uint256 funderIndex = 0;funderIndex< funders.length;funderIndex++){
-             address funder = funders[funderIndex]
-             addressToAmountFunded[funder] = 0
-        }
-    是for循环
-    for(初始化参数; 结束条件; 更新条件){
-       执行逻辑
-    }
+   构造函数在Solidity中用于初始化智能合约的状态变量。当一个新的智能合约实例被部署（即创建）时，构造函数会被自动调用一次。这使得开发者可以在合约首次部署时设置初始状态。
  */

@@ -19,27 +19,35 @@ contract FundMe {
     }
     // 提钱函数
     function withdraw() public {
-        for(uint256 funderIndex = 0;funderIndex< funders.length;funderIndex++){
-             address funder = funders[funderIndex];
-             addressToAmountFunded[funder] = 0;
-             funders = new address[](0);
-             // 3种提取方法 transfer  send 发送交易都有gas限制为2300，超过会报错
-             // 区别在于 transfer 会直接回滚 而send会返回一个布尔值 call 没有gas上限 会返回两个参数 第一个是交易成功？ 第二个不知到
-             // transfer  
-             payable(msg.sender).transfer(address(this).balance)
-             // send
-             bool sendSuccess = payable(msg.sender).send(address(this).balance)
-             // 使用require进行判断
-             require(sendSuccess,'提取失败');
-             // call
-             (bool callSuccess,) = payable(msg.sender).call{value:address(this).balance}('')
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < funders.length;
+            funderIndex++
+        ) {
+            address funder = funders[funderIndex];
+            addressToAmountFunded[funder] = 0;
+            funders = new address[](0);
+            // 3种提取方法 transfer  send 发送交易都有gas限制为2300，超过会报错
+            // 区别在于 transfer 会直接回滚 而send会返回一个布尔值 call 没有gas上限 会返回两个参数 第一个是交易成功？ 第二个不知到
+            // transfer
+            payable(msg.sender).transfer(address(this).balance);
+            // send
+            bool sendSuccess = payable(msg.sender).send(address(this).balance);
+            // 使用require进行判断
+            require(sendSuccess, "send failed");
+            // call
+            (bool callSuccess, ) = payable(msg.sender).call{
+                value: address(this).balance
+            }("");
+            // 使用require进行判断
+            require(callSuccess, "call failed");
         }
     }
 }
-/* 
-  funders = new address[](0); 
+/*
+  funders = new address[](0);
   `new address[](0);` 用于创建一个空的动态数组 然后赋值给funders
-   
+
    payable(msg.sender).transfer(address(this).balance)
    payable(msg.sender):
     msg.sender 是一个全局变量，它返回发送当前交易的外部账户的地址。在这里，我们将 msg.sender 转换为 payable 类型，以便我们可以向该地址发送以太币。
