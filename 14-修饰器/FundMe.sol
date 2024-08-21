@@ -58,5 +58,5 @@ contract FundMe {
                 _;
                 require(msg.sender == owner, "You are not owner");
             }
-            这样代表着先执行所修饰的函数的执行逻辑 ，再执行require
+            这样代表着先执行所修饰的函数的逻辑 ，再执行require
  */
