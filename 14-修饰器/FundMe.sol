@@ -23,8 +23,7 @@ contract FundMe {
         addressToAmountFunded[msg.sender] = msg.value;
     }
     // 提钱函数
-    function withdraw() public {
-        require(msg.sender == owner, "You are not owner");
+    function withdraw() public onlyOwner {
         for (
             uint256 funderIndex = 0;
             funderIndex < funders.length;
@@ -40,7 +39,24 @@ contract FundMe {
             require(callSuccess, "call failed");
         }
     }
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You are not owner");
+        _;
+    }
 }
 /*
-   构造函数在Solidity中用于初始化智能合约的状态变量。当一个新的智能合约实例被部署（即创建）时，构造函数会被自动调用一次。这使得开发者可以在合约首次部署时设置初始状态。
+ modifier onlyOwner 修改器用于确保只有合约的所有者才能执行某些函数。这种修改器通常用于保护合约中的关键函数不被未经授权的用户调用。
+ 在FundMe合约中，我们定义了一个名为onlyOwner的修改器，用于检查调用当前函数的账户是否是合约的所有者。如果调用者不是所有者，则抛出一个异常并回滚交易。
+ 使用修改器的好处是，我们可以在函数声明中直接使用修改器，而不必在函数内部重复编写相同的检查代码。
+        modifier onlyOwner() {
+                require(msg.sender == owner, "You are not owner");
+                _;
+            }
+            这样代表着先执行require，再执行_  _是所修饰的函数的执行逻辑
+
+              modifier onlyOwner() {
+                _;
+                require(msg.sender == owner, "You are not owner");
+            }
+            这样代表着先执行所修饰的函数的执行逻辑 ，再执行require
  */
