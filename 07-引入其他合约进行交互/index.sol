@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.7;
 
-import "../5-calldata,memory,storage/index.sol";
+import "../05-calldata,memory,storage/index.sol";
 
 contract Inherit {
     Index public index;
+
     function createIndex() public {
         index = new Index();
     }
+
     function addPerson(string memory _name, uint _age) public {
         index.addPerson(_name, _age);
     }

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.7;
 import "./PriceConveter.sol";
+
 contract FundMe {
     using PriceConveter for uint256;
     uint256 public minnumUsd = 50 * 1e18;
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
+
     // 要钱函数
     function fund() public payable {
         // require 是 Solidity 中的一个条件检查语句，用于确保某个条件成立。如果条件不成立，则会抛出一个异常并回滚交易。
@@ -17,6 +19,7 @@ contract FundMe {
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] = msg.value;
     }
+
     // 提钱函数
     function withdraw() public {
         for (
@@ -58,4 +61,6 @@ contract FundMe {
     .transfer():
     .transfer() 是一个内置函数，用于将一定数量的以太币从当前账户发送到另一个账户。这个函数需要一个以太币数量作为参数。
 
+
+    在合约中可以通过 address.balance 获取账户的余额
  */

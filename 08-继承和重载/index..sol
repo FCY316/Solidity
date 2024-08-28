@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.7;
-import "../5-calldata,memory,storage/index.sol";
+import "../05-calldata,memory,storage/index.sol";
 
 contract Inherit is Index {
     function addPerson(string memory _name, uint _age) public override {
         people.push(People(people.length, _name, _age));
     }
+
     function getPerson(uint _index) public view returns (People memory) {
         return people[_index];
     }
